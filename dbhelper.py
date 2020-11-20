@@ -22,9 +22,11 @@ class DbPipline:
         dbObject = self.dbHandle()
         cursor = dbObject.cursor()
         # cursor.execute()
-        sql = "INSERT INTO developer_db.ebaina_scrapy(url, title, content, publish_at, province) VALUES(%s, %s, %s, %s, %s)"
+        sql = "INSERT INTO developer_db.ebaina_scrapy(url, title, content, publish_at, province) VALUES(%s, %s, %s, " \
+              "%s, %s) "
         try:
-            cursor.execute(sql, (item['detail_page_url'], item['title'], item['content'], item['date'], item['province']))
+            cursor.execute(sql,
+                           (item['detail_page_url'], item['title'], item['content'], item['date'], item['province']))
             cursor.connection.commit()
         except BaseException as e:
             print("错误在这里>>>>>>>>>>>>>", e, "<<<<<<<<<<<<<错误在这里")
@@ -32,5 +34,8 @@ class DbPipline:
         return item
 
 
-if __name__ == '__main__':
-    DbPipline().process_item(item={"detail_page_url": "http://www.ccgp-jiangsu.gov.cn/ggxx/gkzbgg/./yangzhou/202011/t20201120_756131.html", "title": "扬州市公共资源交易中心仪征分中心关于2021年仪征市本级国家机关、事业...", "date": "2020-11-20", "content": "test"})
+# if __name__ == '__main__':
+#     DbPipline().process_item(item={"detail_page_url": "http://www.ccgp-jiangsu.gov.cn/ggxx/gkzbgg/./yangzhou/202011/t20201120_756131.html",
+#                                    "title": "扬州市公共资源交易中心仪征分中心关于2021年仪征市本级国家机关、事业...",
+#                                    "date": "2020-11-20",
+#                                    "content": "test"})

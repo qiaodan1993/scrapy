@@ -20,7 +20,7 @@ class CcgpJiangSuSpider(scrapy.Spider):
             local_date = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
             if int(time.mktime(time.strptime(local_date, "%Y-%m-%d"))) - int(
-                    time.mktime(time.strptime(webpage_date, "%Y-%m-%d"))) < 2:  # 限制爬取xx天
+                    time.mktime(time.strptime(webpage_date, "%Y-%m-%d"))) < 86400 * 60:  # 限制爬取xx天, 60为天数
 
                 detail_page_url = CcgpJiangSuSpider.start_urls[0] + row_data.css('li a::attr(href)').extract_first()
 
@@ -39,7 +39,7 @@ class CcgpJiangSuSpider(scrapy.Spider):
                     DbPipline().process_item(item)
                 yield item
 
-        if self.next_page < 50:  # 控制爬取的页数
+        if self.next_page < 1000:  # 控制爬取的页数
             yield response.follow(self.start_urls[0] + 'index_' + str(self.next_page) + '.html', self.parse)
             self.next_page = self.next_page + 1
 
