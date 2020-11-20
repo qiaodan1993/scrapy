@@ -1,0 +1,4 @@
+scrapy==2.4.1
+pymysql==0.10.1
+requests==2.25.0
+lxml~=4.6.1

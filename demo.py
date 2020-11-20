@@ -19,5 +19,3 @@ class QuotesSpider(scrapy.Spider):
             yield response.follow(next_page, self.parse)
 
 
-if __name__ == '__main__':
-    QuotesSpider()
