@@ -12,6 +12,7 @@ class TenderItem(scrapy.Item):
 
     url = scrapy.Field()
     title = scrapy.Field()
+    typical = scrapy.Field()
     publish_at = scrapy.Field()
     province = scrapy.Field()
     city = scrapy.Field()

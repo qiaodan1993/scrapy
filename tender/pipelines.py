@@ -23,11 +23,11 @@ class TenderPipeline:
         dbObject = self.dbHandle()
         cursor = dbObject.cursor()
         # cursor.execute()
-        sql = "INSERT INTO developer_db.tender_source(url, title, html_content, publish_at, province, city) VALUES(%s, %s, %s, " \
+        sql = "INSERT INTO developer_db.tender_source(url, typical, title, html_content, publish_at, province, city) VALUES(%s, %s, %s, %s, " \
               "%s, %s, %s) "
         try:
             cursor.execute(sql,
-                           (item['url'], item['title'], item['html_content'], item['publish_at'], item['province'], item['city']))
+                           (item['url'], item['typical'], item['title'], item['html_content'], item['publish_at'], item['province'], item['city']))
             cursor.connection.commit()
         except BaseException as e:
             print("错误在这里>>>>>>>>>>>>>", e, "<<<<<<<<<<<<<错误在这里")

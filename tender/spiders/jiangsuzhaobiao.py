@@ -2,12 +2,13 @@ import scrapy
 from tender.items import TenderItem 
 
 
-class JiangsuSpider(scrapy.Spider):
-    name = 'jiangsu'
+class JiangsuZhaoBiaoSpider(scrapy.Spider):
+    name = 'jiangsuzhaobiao'
     allowed_domains = ['www.ccgp-jiangsu.gov.cn']
     start_urls = ['http://www.ccgp-jiangsu.gov.cn/ggxx/gkzbgg/']
 
     province = '江苏'
+    typical = '招标'
     next_page = 1
     max_page = 1
 
@@ -19,6 +20,7 @@ class JiangsuSpider(scrapy.Spider):
             item['url'] = url
             item['publish_at'] = row_data.css('li::text').extract()[-1].split()[0]
             item['province'] = self.province
+            item['typical'] = self.typical
 
             request = scrapy.Request(url, callback=self.parse_detail)
             request.meta['item'] = item
