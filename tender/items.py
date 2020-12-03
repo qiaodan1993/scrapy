@@ -9,12 +9,11 @@ import scrapy
 class TenderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-
     url = scrapy.Field()
-    title = scrapy.Field()
+    province = scrapy.Field()
     typical = scrapy.Field()
     publish_at = scrapy.Field()
-    province = scrapy.Field()
-    city = scrapy.Field()
-    html_content = scrapy.Field()
+    title = scrapy.Field()
+    content = scrapy.Field()
+    html_source = scrapy.Field()
     # pass

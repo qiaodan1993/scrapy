@@ -7,7 +7,8 @@ from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
-
+import pymysql
+from scrapy.exceptions import CloseSpider
 
 class TenderSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -72,6 +73,26 @@ class TenderDownloaderMiddleware:
         # Called for each request that goes through the downloader
         # middleware.
 
+        self.connect = pymysql.connect(
+            host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
+            user="developer_user",
+            passwd="dev123456",
+            charset="utf8",
+            db="developer_db",
+            use_unicode=False
+        )
+        self.cursor = self.connect.cursor()
+
+        sql = "SELECT count(1) FROM tender_source where url = %s"
+
+        self.cursor.execute(sql, (request.url))
+        
+        count = self.cursor.fetchone()
+        self.cursor.close()
+        self.connect.close()  
+        if count[0] >= 1:
+            spider.crawler.engine.close_spider(spider, "Exists:" + request.url ) 
+
         # Must either:
         # - return None: continue processing this request
         # - or return a Response object
@@ -92,7 +113,6 @@ class TenderDownloaderMiddleware:
     def process_exception(self, request, exception, spider):
         # Called when a download handler or a process_request()
         # (from other downloader middleware) raises an exception.
-
         # Must either:
         # - return None: continue processing this exception
         # - return a Response object: stops process_exception() chain

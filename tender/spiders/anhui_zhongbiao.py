@@ -9,9 +9,15 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
     base_url = 'http://www.ccgp-anhui.gov.cn'
     province = '安徽'
     typical = '中标'
-    next_page = 1
-    max_page = 4
+
+    def start_requests(self):
+        self.next_page = self.settings['COMMAND_NEXT_PAGE']
+        self.max_page = self.settings['COMMAND_MAX_PAGE']
+
+        yield scrapy.Request(self.start_urls[0], self.parse)
+
     def parse(self, response):
+        
         for row_data in response.xpath('//*[@class="zc_contract_top"]/table/tr'):
             url = self.base_url + row_data.css('a::attr(href)').extract_first()
 
@@ -34,8 +40,7 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
         item = response.meta['item']
 
         item['title'] = response.xpath('//div[@class="frameNews"]/h1/text()').get().strip()
-        # item['city'] = response.xpath('//div[@class="content"]/div[@class="local"]/text()').get().split()[-1]
-        item['city'] = item['title'][:2]
-        item['html_content'] = response.xpath('//div[@class="frameNews"]').get().strip()
+        item['content'] = response.xpath('//div[@class="frameNews"]').get().strip()
+        item['html_source'] = response.body
 
         yield item

@@ -6,30 +6,33 @@ import pymysql
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-
+from scrapy.exceptions import DropItem
 
 class TenderPipeline:
-    def dbHandle(self):
-        conn = pymysql.connect(
+
+    def open_spider(self, spider):
+        self.connect = pymysql.connect(
             host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
             user="developer_user",
             passwd="dev123456",
             charset="utf8",
+            db="developer_db",
             use_unicode=False
         )
-        return conn
+        self.cursor = self.connect.cursor()
+
+    def close_spider(self, spider):
+        self.cursor.close()
+        self.connect.close()
 
     def process_item(self, item, spider):
-        dbObject = self.dbHandle()
-        cursor = dbObject.cursor()
-        # cursor.execute()
-        sql = "INSERT INTO developer_db.tender_source(url, typical, title, html_content, publish_at, province, city) VALUES(%s, %s, %s, %s, " \
+        sql = "INSERT INTO tender_source(url, province, typical, publish_at, title, content, html_source) VALUES(%s, %s, %s, %s, " \
               "%s, %s, %s) "
         try:
-            cursor.execute(sql,
-                           (item['url'], item['typical'], item['title'], item['html_content'], item['publish_at'], item['province'], item['city']))
-            cursor.connection.commit()
+            self.cursor.execute(sql,
+                           (item['url'], item['province'], item['typical'], item['publish_at'], item['title'], item['content'], item['html_source']))
+            self.connect.commit()
         except BaseException as e:
-            print("错误在这里>>>>>>>>>>>>>", e, "<<<<<<<<<<<<<错误在这里")
-            dbObject.rollback()
+            self.connect.rollback()
+            raise DropItem(e.args[1])
         return item

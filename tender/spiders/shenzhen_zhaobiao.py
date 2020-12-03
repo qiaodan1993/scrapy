@@ -2,25 +2,29 @@ import scrapy
 from tender.items import TenderItem 
 
 
-class BeijingZhaoBiaoSpider(scrapy.Spider):
-    name = 'beijingzhaobiao'
-    allowed_domains = ['ccgp-beijing.gov.cn']
-    start_urls = ['http://www.ccgp-beijing.gov.cn/xxgg/sjzfcggg/sjzbgg/']
+class ShenzhenZhaoBiaoSpider(scrapy.Spider):
+    name = 'shenzhen_zhaobiao'
 
-    province = '北京'
+    allowed_domains = ['ggzy.sz.gov.cn']
+    start_urls = ['http://ggzy.sz.gov.cn/cn/jyxx/jsgc/jsgz_zbgg/']
+
+    province = '深圳'
     typical = '招标'
-    next_page = 1
-    max_page = 4
+
+    def start_requests(self):
+        self.next_page = self.settings['COMMAND_NEXT_PAGE']
+        self.max_page = self.settings['COMMAND_MAX_PAGE']
+
+        yield scrapy.Request(self.start_urls[0], self.parse)
 
     def parse(self, response):
-        for row_data in response.xpath('//ul[@class="xinxi_ul"]/li'):
-            url = self.start_urls[0] + row_data.css('li a::attr(href)').extract_first()
+        for row_data in response.xpath('//div[@class="tag-list4"]/ul/li'):
+            url = row_data.css('li a::attr(href)').extract_first()
             
             item = TenderItem()
             item['url'] = url
             item['publish_at'] = row_data.css('span::text').extract_first()
             item['province'] = self.province
-            item['city'] = self.province
             item['typical'] = self.typical
 
             request = scrapy.Request(url, callback=self.parse_detail)
@@ -34,8 +38,9 @@ class BeijingZhaoBiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//body/div[2]/div[2]/span/text()').get().strip()
-        item['html_content'] = response.xpath('//body/div[2]/div[3]').get().strip()
+        item['title'] = response.xpath('//div[@class="container"]//div[@class="bt"]/text()').get().strip()
+        item['content'] = response.xpath('//div[@class="container"]//div[@class="text"]').get().strip()
+        item['html_source'] = response.body
 
         yield item
     
