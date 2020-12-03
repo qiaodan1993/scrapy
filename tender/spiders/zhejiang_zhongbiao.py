@@ -1,6 +1,7 @@
 import scrapy
 import json
 from tender.items import TenderItem 
+import time
 
 class ZhejiangZhongBiaoSpider(scrapy.Spider):
     name = 'zhejiang_zhongbiao'
@@ -22,7 +23,8 @@ class ZhejiangZhongBiaoSpider(scrapy.Spider):
 
             item = TenderItem()
             item['url'] = row_data["url"]
-            item['publish_at'] = row_data["pubDate"]
+            timeArray = time.localtime(int(row_data["pubDate"])/1000)
+            item['publish_at'] = time.strftime("%Y-%m-%d", timeArray)
             item['province'] = self.province
             item['typical'] = self.typical
             item['title'] = row_data["projectName"]
