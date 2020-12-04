@@ -85,8 +85,11 @@ class TenderDownloaderMiddleware:
         # middleware.
 
         sql = "SELECT count(1) FROM tender_source where url = %s"
-        self.cursor.execute(sql, (request.url))
-        count = self.cursor.fetchone()
+        self.connect.ping()
+        cursor = self.connect.cursor()
+        cursor.execute(sql, (request.url))
+        count = cursor.fetchone()
+        cursor.close()
         if count[0] >= 1:
             raise IgnoreRequest(request.url)
 
