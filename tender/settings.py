@@ -50,9 +50,9 @@ COOKIES_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'tender.middlewares.TenderDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+   'tender.middlewares.TenderDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -90,5 +90,5 @@ ITEM_PIPELINES = {
 COMMANDS_MODULE='tender.commands'
 COMMAND_NEXT_PAGE=60
 COMMAND_MAX_PAGE=100
-LOG_LEVEL='WARNING'
+LOG_LEVEL='DEBUG'
 DOWNLOAD_TIMEOUT=10

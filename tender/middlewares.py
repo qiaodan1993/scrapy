@@ -9,6 +9,7 @@ from scrapy import signals
 from itemadapter import is_item, ItemAdapter
 import pymysql
 from scrapy.exceptions import CloseSpider
+from scrapy.exceptions import IgnoreRequest
 
 class TenderSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -20,7 +21,6 @@ class TenderSpiderMiddleware:
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
 
     def process_spider_input(self, response, spider):
         # Called for each response that goes through the spider
@@ -67,13 +67,8 @@ class TenderDownloaderMiddleware:
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
 
-    def process_request(self, request, spider):
-        # Called for each request that goes through the downloader
-        # middleware.
-
-        self.connect = pymysql.connect(
+        s.connect = pymysql.connect(
             host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
             user="developer_user",
             passwd="dev123456",
@@ -81,17 +76,19 @@ class TenderDownloaderMiddleware:
             db="developer_db",
             use_unicode=False
         )
-        self.cursor = self.connect.cursor()
+        s.cursor = s.connect.cursor()
+
+        return s
+
+    def process_request(self, request, spider):
+        # Called for each request that goes through the downloader
+        # middleware.
 
         sql = "SELECT count(1) FROM tender_source where url = %s"
-
         self.cursor.execute(sql, (request.url))
-        
         count = self.cursor.fetchone()
-        self.cursor.close()
-        self.connect.close()  
         if count[0] >= 1:
-            spider.crawler.engine.close_spider(spider, "Exists:" + request.url ) 
+            raise IgnoreRequest(request.url)
 
         # Must either:
         # - return None: continue processing this request
