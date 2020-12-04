@@ -5,7 +5,6 @@ class HainanZhaoBiaoSpider(scrapy.Spider):
     name = 'hainan_zhaobiao'
     allowed_domains = ['www.ccgp-hainan.gov.cn']
     start_urls = ['https://www.ccgp-hainan.gov.cn/cgw/cgw_list.jsp?begindate=&enddate=&title=&bid_type=101&proj_number=&zone=&ctype=']
-    base_url = 'https://www.ccgp-hainan.gov.cn'
     
     province = '海南'
     typical = '招标'
@@ -18,8 +17,7 @@ class HainanZhaoBiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//div[@class="index07_07_02"]/ul/li'):
-            url = self.base_url + row_data.css('li span a::attr(href)').extract_first()
-
+            url = response.urljoin(row_data.css('li span a::attr(href)').get())
             item = TenderItem()
             item['url'] = url
             item['publish_at'] = row_data.css('li span em::text').get().strip()

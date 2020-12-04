@@ -23,11 +23,11 @@ class TianjinZhongbiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//ul[@class="dataList"]/li'):
-            url = self.base_url + row_data.css('li a::attr(href)').extract_first().split('=')[1][:-4]
+            url = self.base_url + row_data.css('li a::attr(href)').get().split('=')[1][:-4]
 
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.css('span::text').extract()
+            item['publish_at'] = row_data.css('span::text').get()
             item['province'] = self.province
             item['typical'] = self.typical
 
@@ -44,7 +44,7 @@ class TianjinZhongbiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//div[@class="pageInner"]/table//b/text()').extract_first()
+        item['title'] = response.xpath('//div[@class="pageInner"]/table//b/text()').get()
         item['content'] = response.xpath('//div[@class="pageInner"]/table').get().strip()
         item['html_source'] = response.body
 

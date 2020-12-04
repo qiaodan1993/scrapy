@@ -15,10 +15,9 @@ class JiangsuZhongBiaoSpider(scrapy.Spider):
 
         yield scrapy.Request(self.start_urls[0], self.parse)
 
-
     def parse(self, response):
         for row_data in response.xpath('//*[@id="newsList"]/ul/li'):
-            url = self.start_urls[0] + row_data.css('li a::attr(href)').extract_first()
+            url = response.urljoin(row_data.css('li a::attr(href)').get())
             
             item = TenderItem()
             item['url'] = url

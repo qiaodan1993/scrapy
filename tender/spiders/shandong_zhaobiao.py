@@ -6,8 +6,6 @@ class ShandongZhaobiaoSpider(scrapy.Spider):
     allowed_domains = ['www.ccgp-shandong.gov.cn']
     start_urls = ['http://www.ccgp-shandong.gov.cn/sdgp2017/site/listnew.jsp']
 
-    base_url = 'http://www.ccgp-shandong.gov.cn'
-
     province = '山东'
     typical = '招标'
 
@@ -19,8 +17,7 @@ class ShandongZhaobiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//ul[@class="news_list2"]/li'):
-            url = self.base_url + row_data.css('li span span a::attr(href)').extract_first()
-
+            url = response.urljoin(row_data.css('li span span a::attr(href)').get())
             item = TenderItem()
             item['url'] = url
             item['publish_at'] = row_data.xpath('//span[@class="hits"]/text()').get()

@@ -6,7 +6,6 @@ class AnhuiZhaoBiaoSpider(scrapy.Spider):
     allowed_domains = ['www.ccgp-anhui.gov.cn']
     start_urls = ['http://www.ccgp-anhui.gov.cn/cmsNewsController/getCgggNewsList.do?bid_type=011']
 
-    base_url = 'http://www.ccgp-anhui.gov.cn'
     province = '安徽'
     typical = '招标'
 
@@ -18,7 +17,7 @@ class AnhuiZhaoBiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//*[@class="zc_contract_top"]/table/tr'):
-            url = self.base_url + row_data.css('a::attr(href)').extract_first()
+            url = response.urljoin(row_data.css('a::attr(href)').get())
 
             item = TenderItem()
             item['url'] = url

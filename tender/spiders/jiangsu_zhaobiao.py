@@ -17,7 +17,7 @@ class JiangsuZhaoBiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//*[@id="newsList"]/ul/li'):
-            url = self.start_urls[0] + row_data.css('li a::attr(href)').extract_first()
+            url = response.urljoin(row_data.css('li a::attr(href)').get())
 
             item = TenderItem()
             item['url'] = url
@@ -39,10 +39,6 @@ class JiangsuZhaoBiaoSpider(scrapy.Spider):
         item['title'] = response.xpath('//div[@class="dtit"]/h1/text()').get().strip()
         item['content'] = response.xpath('//div[@class="content"]').get().strip()
         item['html_source'] = response.body
-        # item['html_source'] = '2'
-        # item['content'] = '2'
         yield item
 
     
-
-        

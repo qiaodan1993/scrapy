@@ -19,11 +19,11 @@ class ShenzhenZhaoBiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         for row_data in response.xpath('//div[@class="tag-list4"]/ul/li'):
-            url = row_data.css('li a::attr(href)').extract_first()
+            url = row_data.css('li a::attr(href)').get()
             
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.css('span::text').extract_first()
+            item['publish_at'] = row_data.css('span::text').get()
             item['province'] = self.province
             item['typical'] = self.typical
 

@@ -6,8 +6,6 @@ class GuangdongZhongbiaoSpider(scrapy.Spider):
     allowed_domains = ['www.ccgp-guangdong.gov.cn']
     start_urls = ['http://www.ccgp-guangdong.gov.cn/queryMoreInfoList.do']
 
-    base_url = 'http://www.ccgp-guangdong.gov.cn'
-
     province = '广东'
     typical = '中标'
 
@@ -18,9 +16,8 @@ class GuangdongZhongbiaoSpider(scrapy.Spider):
         yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data)
 
     def parse(self, response):
-        # print(response.xpath('//ul[@class="m_m_c_list"]/li').get())
         for row_data in response.xpath('//ul[@class="m_m_c_list"]/li'):
-            url = self.base_url + row_data.css('li a::attr(href)')[1].extract()
+            url = response.urljoin(row_data.css('li a::attr(href)')[1].get())
             item = TenderItem()
             item['url'] = url
             item['publish_at'] = row_data.css('li em::text').get().strip().split(' ')[0]

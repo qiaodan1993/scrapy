@@ -2,11 +2,10 @@ import scrapy
 from tender.items import TenderItem 
 
 class AnhuiZhongBiaoSpider(scrapy.Spider):
-    name = 'anhuizhongbiao'
+    name = 'anhui_zhongbiao'
     allowed_domains = ['www.ccgp-anhui.gov.cn']
     start_urls = ['http://www.ccgp-anhui.gov.cn/cmsNewsController/getCgggNewsList.do?bid_type=108']
 
-    base_url = 'http://www.ccgp-anhui.gov.cn'
     province = '安徽'
     typical = '中标'
 
@@ -17,9 +16,8 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
         yield scrapy.Request(self.start_urls[0], self.parse)
 
     def parse(self, response):
-        
         for row_data in response.xpath('//*[@class="zc_contract_top"]/table/tr'):
-            url = self.base_url + row_data.css('a::attr(href)').extract_first()
+            url = response.urljoin(row_data.css('a::attr(href)').get())
 
             item = TenderItem()
             item['url'] = url

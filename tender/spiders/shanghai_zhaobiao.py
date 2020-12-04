@@ -7,8 +7,6 @@ class ShanghaiZhaoBiaoSpider(scrapy.Spider):
     allowed_domains = ['www.zfcg.sh.gov.cn']
     start_urls = ['http://www.zfcg.sh.gov.cn/front/search/category']
 
-    base_url = 'http://www.zfcg.sh.gov.cn/'
-
     province = '上海'
     typical = '招标'
 
@@ -22,10 +20,9 @@ class ShanghaiZhaoBiaoSpider(scrapy.Spider):
     def parse(self, response):
         js = json.loads(response.body) 
         for row_data in js["hits"]["hits"]:
-            url = self.base_url + row_data["_source"]["url"]
+            url = response.urljoin(row_data["_source"]["url"])
             item = TenderItem()
             item['url'] = url
-            
             item['province'] = self.province
             item['typical'] = self.typical
 
