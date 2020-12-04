@@ -27,7 +27,7 @@ CONCURRENT_REQUESTS = 2
 # See also autothrottle settings and docs
 DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 1
+CONCURRENT_REQUESTS_PER_DOMAIN = 2
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -88,7 +88,7 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 COMMANDS_MODULE='tender.commands'
-COMMAND_NEXT_PAGE=50
+COMMAND_NEXT_PAGE=60
 COMMAND_MAX_PAGE=100
 LOG_LEVEL='WARNING'
 DOWNLOAD_TIMEOUT=10
