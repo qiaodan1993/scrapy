@@ -27,7 +27,6 @@ class ShandongZhongbiaoSpider(scrapy.Spider):
             item['province'] = self.province
             item['typical'] = self.typical
 
-            print("url="+url)
             request = scrapy.Request(url, callback=self.parse_detail)
             request.meta['item'] = item
 

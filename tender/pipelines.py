@@ -9,21 +9,28 @@ from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 
 class TenderPipeline:
+    connect=None
+    cursor=None
 
     def open_spider(self, spider):
-        self.connect = pymysql.connect(
-            host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
-            user="developer_user",
-            passwd="dev123456",
-            charset="utf8",
-            db="developer_db",
-            use_unicode=False
-        )
-        self.cursor = self.connect.cursor()
+        
+        if self.connect is None or self.cursor is None:
+            self.connect = pymysql.connect(
+                host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
+                user="developer_user",
+                passwd="dev123456",
+                charset="utf8",
+                db="developer_db",
+                use_unicode=False
+            )
+            self.cursor = self.connect.cursor()
 
     def close_spider(self, spider):
-        self.cursor.close()
-        self.connect.close()
+        if self.cursor is not None:
+            self.cursor.close()
+    
+        if self.connect is not None:
+            self.connect.close()
 
     def process_item(self, item, spider):
         sql = "INSERT INTO tender_source(url, province, typical, publish_at, title, content, html_source) VALUES(%s, %s, %s, %s, " \
