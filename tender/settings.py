@@ -14,7 +14,7 @@ NEWSPIDER_MODULE = 'tender.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'tender (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -90,8 +90,8 @@ ITEM_PIPELINES = {
 COMMANDS_MODULE='tender.commands'
 COMMAND_NEXT_PAGE=1
 COMMAND_MAX_PAGE=100
-# LOG_LEVEL='WARNING'
-LOG_LEVEL='DEBUG'
+LOG_LEVEL='WARNING'
+# LOG_LEVEL='DEBUG'
 DOWNLOAD_TIMEOUT=10
 
 # MYSQL_HOST='rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com'

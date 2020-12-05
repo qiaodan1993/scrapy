@@ -11,22 +11,25 @@ from twisted.enterprise import adbapi
 
 class TenderPipeline:
     dbpool = None
-    def open_spider(self, spider):
+    def __init__(self, crawler):
         if TenderPipeline.dbpool is None:
             TenderPipeline.dbpool = adbapi.ConnectionPool('pymysql',
                     cp_max=1,
                     cp_min=1,
-                    host=spider.settings['MYSQL_HOST'],
-                    user=spider.settings['MYSQL_USER'],
-                    passwd=spider.settings['MYSQL_PASSWD'],
-                    charset=spider.settings['MYSQL_CHARSET'],
-                    db=spider.settings['MYSQL_DB'],
-                    use_unicode=spider.settings['MYSQL_UNICODE'])
-        else:
-            print("USE adbapi ConnectionPool")
-
-    def close_spider(self, spider):
-        TenderPipeline.dbpool.close()
+                    host=crawler.settings['MYSQL_HOST'],
+                    user=crawler.settings['MYSQL_USER'],
+                    passwd=crawler.settings['MYSQL_PASSWD'],
+                    charset=crawler.settings['MYSQL_CHARSET'],
+                    db=crawler.settings['MYSQL_DB'],
+                    use_unicode=crawler.settings['MYSQL_UNICODE'])
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+    
+    def __DEL__(self):
+        if TenderPipeline.dbpool is not None:
+            TenderPipeline.dbpool.close()
 
     def process_item(self, item, spider):
         for val in item:
