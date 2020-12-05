@@ -20,14 +20,14 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 4
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 3
+# CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -50,9 +50,9 @@ COOKIES_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-   'tender.middlewares.TenderDownloaderMiddleware': 543,
-}
+# DOWNLOADER_MIDDLEWARES = {
+   # 'tender.middlewares.TenderDownloaderMiddleware': 543,
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -62,9 +62,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'tender.pipelines.TenderPipeline': 300,
-}
+# ITEM_PIPELINES = {
+   # 'tender.pipelines.TenderPipeline': 300,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -89,7 +89,7 @@ ITEM_PIPELINES = {
 
 COMMANDS_MODULE='tender.commands'
 COMMAND_NEXT_PAGE=1
-COMMAND_MAX_PAGE=100
+COMMAND_MAX_PAGE=2
 LOG_LEVEL='WARNING'
 # LOG_LEVEL='DEBUG'
 DOWNLOAD_TIMEOUT=10
@@ -107,3 +107,6 @@ MYSQL_PASSWD='Into890123'
 MYSQL_DB='xdm72191784_db'
 MYSQL_CHARSET="utf8"
 MYSQL_UNICODE=False
+
+DUPEFILTER_CLASS='scrapy.dupefilters.BaseDupeFilter'
+TELNETCONSOLE_ENABLED=False

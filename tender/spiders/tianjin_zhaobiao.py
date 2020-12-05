@@ -19,7 +19,7 @@ class TianjinZhaobiaoSpider(scrapy.Spider):
     def start_requests(self):
         self.next_page = self.settings['COMMAND_NEXT_PAGE']
         self.max_page = self.settings['COMMAND_MAX_PAGE']
-        yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data)
+        yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data, dont_filter=True)
 
     def parse(self, response):
         for row_data in response.xpath('//ul[@class="dataList"]/li'):
@@ -31,14 +31,14 @@ class TianjinZhaobiaoSpider(scrapy.Spider):
             item['province'] = self.province
             item['typical'] = self.typical
 
-            request = scrapy.Request(url, callback=self.parse_detail)
+            request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
 
             yield request
 
         if self.next_page < self.max_page:  # 控制爬取的页数
             self.form_data["page"] = str(self.next_page)
-            yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data)
+            yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data, dont_filter=True)
             self.next_page = self.next_page + 1
 
 
