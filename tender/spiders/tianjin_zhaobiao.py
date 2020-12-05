@@ -45,7 +45,7 @@ class TianjinZhaobiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
         item['title'] = response.xpath('//div[@class="pageInner"]/table//b/text()').get()
-        item['content'] = response.xpath('//div[@class="pageInner"]/table').get().strip()
+        item['content'] = response.xpath('//div[@class="pageInner"]/table').get()
         item['html_source'] = response.body
 
         yield item

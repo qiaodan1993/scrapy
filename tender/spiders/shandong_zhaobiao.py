@@ -37,8 +37,8 @@ class ShandongZhaobiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//h1[@class="title"]/text()').get().strip()
-        item['content'] = response.xpath('//div[@class="content"]').get().strip()
+        item['title'] = response.xpath('//h1[@class="title"]/text()').get()
+        item['content'] = response.xpath('//div[@class="content"]').get()
         item['html_source'] = response.body
         
         yield item

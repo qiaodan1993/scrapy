@@ -1,33 +1,40 @@
 import scrapy
 from tender.items import TenderItem 
+from scrapy.shell import inspect_response
+import json
+import datetime
 
-class TianjinZhongbiaoSpider(scrapy.Spider):
-    name = 'tianjin_zhongbiao'
-    allowed_domains = ['www.ccgp-tianjin.gov.cn']
-    start_urls = ['http://www.ccgp-tianjin.gov.cn/portal/topicView.do']
+class HunanZhaobiaoSpider(scrapy.Spider):
+    name = 'hunan_zhaobiao'
+    allowed_domains = ['www.ccgp-hunan.gov.cn']
+    start_urls = ['http://www.ccgp-hunan.gov.cn/mvc/getNoticeList4Web.do']
 
-    base_url = 'http://www.ccgp-tianjin.gov.cn/portal/documentView.do?method=view&ver=2&id='
+    province = '湖南'
+    typical = '招标'
 
-    custom_settings = {
-        'DOWNLOAD_DELAY': 5,
-    }
+    base_url = 'http://www.ccgp-hunan.gov.cn/mvc/viewNoticeContent.do?noticeId='
 
-    province = '天津'
-    typical = '中标'
+    form_data = {'page': '1', 'pageSize':'18', 'nType': 'prcmNotices', 'startDate': '2020-01-01',
+'endDate': '2020-12-05'}
 
-    form_data = {'method': 'view', 'page': '1', 'id': '2013', 'step': '1', 'view': 'Infor', 'st':'1'}
     def start_requests(self):
         self.next_page = self.settings['COMMAND_NEXT_PAGE']
         self.max_page = self.settings['COMMAND_MAX_PAGE']
+        self.form_data["endDate"] = str(datetime.date.today())
+
         yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data, dont_filter=True)
 
     def parse(self, response):
-        for row_data in response.xpath('//ul[@class="dataList"]/li'):
-            url = self.base_url + row_data.css('li a::attr(href)').get().split('=')[1][:-4]
+        js = json.loads(response.body)
 
+        # inspect_response(response, self)
+
+        for row_data in js["rows"]:
+            url = self.base_url + str(row_data["NOTICE_ID"])
             item = TenderItem()
+            item['title'] = row_data['NOTICE_TITLE']
+            item['publish_at'] = row_data['NEWWORK_DATE']
             item['url'] = url
-            item['publish_at'] = row_data.css('span::text').get()
             item['province'] = self.province
             item['typical'] = self.typical
 
@@ -36,16 +43,16 @@ class TianjinZhongbiaoSpider(scrapy.Spider):
 
             yield request
 
+        self.next_page = self.next_page + 1
         if self.next_page < self.max_page:  # 控制爬取的页数
             self.form_data["page"] = str(self.next_page)
             yield scrapy.FormRequest(self.start_urls[0], formdata=self.form_data, dont_filter=True)
-            self.next_page = self.next_page + 1
+            
 
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//div[@class="pageInner"]/table//b/text()').get()
-        item['content'] = response.xpath('//div[@class="pageInner"]/table').get()
+        item['content'] = response.xpath('//table').get()
         item['html_source'] = response.body
-
+        
         yield item

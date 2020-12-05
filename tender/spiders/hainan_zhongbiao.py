@@ -22,7 +22,7 @@ class HainanZhongBiaoSpider(scrapy.Spider):
             url = response.urljoin(row_data.css('li span a::attr(href)').get())
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.css('li span em::text').get().strip()
+            item['publish_at'] = row_data.css('li span em::text').get()
             item['province'] = self.province
             item['typical'] = self.typical
 
@@ -33,8 +33,8 @@ class HainanZhongBiaoSpider(scrapy.Spider):
     
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//div[@class="zx-xxxqy"]/h2/text()').get().strip() 
-        item['content'] = response.xpath('//div[@class="content01"]').get().strip()
+        item['title'] = response.xpath('//div[@class="zx-xxxqy"]/h2/text()').get() 
+        item['content'] = response.xpath('//div[@class="content01"]').get()
         item['html_source'] = response.body
 
         yield item

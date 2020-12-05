@@ -2,14 +2,14 @@ import scrapy
 from tender.items import TenderItem 
 
 
-class ShenzhenZhongBiaoSpider(scrapy.Spider):
-    name = 'shenzhen_zhongbiao'
+class HebeiZhaoBiaoSpider(scrapy.Spider):
+    name = 'hebei_zhaobiao'
 
-    allowed_domains = ['ggzy.sz.gov.cn']
-    start_urls = ['http://ggzy.sz.gov.cn/cn/jyxx/jsgc/zbgg/']
+    allowed_domains = ['www.ccgp-hebei.gov.cn']
+    start_urls = ['http://www.ccgp-hebei.gov.cn/province/cggg/zbgg/']
 
-    province = '深圳'
-    typical = '中标'
+    province = '河北'
+    typical = '招标'
 
     def start_requests(self):
         next_page = self.settings['COMMAND_NEXT_PAGE']
@@ -19,16 +19,15 @@ class ShenzhenZhongBiaoSpider(scrapy.Spider):
             if pageNum == 1:
                 yield scrapy.Request(self.start_urls[0]+ 'index.html', self.parse, dont_filter=True)
             else:
-                yield scrapy.Request(self.start_urls[0]+ 'index_' + str(pageNum) + '.html', self.parse, dont_filter=True)
+                yield scrapy.Request(self.start_urls[0]+ 'index_' + str(pageNum-1) + '.html', self.parse, dont_filter=True)
 
 
     def parse(self, response):
-        for row_data in response.xpath('//div[@class="tag-list4"]/ul/li'):
-            url = row_data.css('li a::attr(href)').get()
-            
+        for row_data in response.xpath('//table[@id="moredingannctable"]/tr[not(@bgcolor)]'):
+            url = response.urljoin(row_data.xpath('.//a[@class="a3"]/@href').get())
+
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.css('span::text').get()
             item['province'] = self.province
             item['typical'] = self.typical
 
@@ -39,8 +38,10 @@ class ShenzhenZhongBiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//div[@class="container"]//div[@class="bt"]/text()').get()
-        item['content'] = response.xpath('//div[@class="container"]//div[@class="text"]').get()
+
+        item['title'] = response.xpath('//table[@id="2020_VERSION"]/tr[4]/td/span/text()').get()
+        item['publish_at'] = response.xpath('//table[@id="2020_VERSION"]/tr[9]/td/span/text()').get()
+        item['content'] = response.xpath('//table[@id="2020_VERSION"]/tr[10]/td/span').get()
         item['html_source'] = response.body
 
         yield item

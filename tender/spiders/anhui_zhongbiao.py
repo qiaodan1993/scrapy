@@ -23,7 +23,7 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
 
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.xpath('td[position()=2]/a/text()').get().strip()[1:-1]
+            item['publish_at'] = row_data.xpath('td[position()=2]/a/text()').get()[1:-1]
             item['province'] = self.province
             item['typical'] = self.typical
 
@@ -35,8 +35,8 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
 
-        item['title'] = response.xpath('//div[@class="frameNews"]/h1/text()').get().strip()
-        item['content'] = response.xpath('//div[@class="frameNews"]').get().strip()
+        item['title'] = response.xpath('//div[@class="frameNews"]/h1/text()').get()
+        item['content'] = response.xpath('//div[@class="frameNews"]').get()
         item['html_source'] = response.body
 
         yield item

@@ -39,8 +39,8 @@ class BeijingZhongBiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        item['title'] = response.xpath('//body/div[2]/div[2]/span/text()').get().strip()
-        item['content'] = response.xpath('//body/div[2]/div[3]').get().strip()
+        item['title'] = response.xpath('//body/div[2]/div[2]/span/text()').get()
+        item['content'] = response.xpath('//body/div[2]/div[3]').get()
         item['html_source'] = response.body
 
         yield item

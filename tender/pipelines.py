@@ -34,7 +34,9 @@ class TenderPipeline:
     def process_item(self, item, spider):
         for val in item:
             if item[val] is None:
-                raise DropItem("None:"+item[val])
+                print(item)
+                raise DropItem("None:"+ val)
+            item[val] = item[val].strip()
         try:
             TenderPipeline.dbpool.runInteraction(self.do_insert, item)
         except:
