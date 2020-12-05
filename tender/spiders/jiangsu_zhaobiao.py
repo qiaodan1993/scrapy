@@ -21,7 +21,7 @@ class JiangsuZhaoBiaoSpider(scrapy.Spider):
 
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.css('li::text').extract()[-1].split()[0]
+            item['publish_at'] = row_data.css('li::text').getall()[-1].split()[0]
             item['province'] = self.province
             item['typical'] = self.typical
 

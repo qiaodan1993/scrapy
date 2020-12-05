@@ -61,22 +61,26 @@ class TenderDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
-
+    connect = None
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
         s = cls()
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
 
-        s.connect = pymysql.connect(
-            host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
-            user="developer_user",
-            passwd="dev123456",
-            charset="utf8",
-            db="developer_db",
-            use_unicode=False
-        )
-        s.cursor = s.connect.cursor()
+        if TenderDownloaderMiddleware.connect is None:
+            TenderDownloaderMiddleware.connect = pymysql.connect(
+                host=crawler.settings['MYSQL_HOST'],
+                user=crawler.settings['MYSQL_USER'],
+                passwd=crawler.settings['MYSQL_PASSWD'],
+                charset=crawler.settings['MYSQL_CHARSET'],
+                db=crawler.settings['MYSQL_DB'],
+                use_unicode=crawler.settings['MYSQL_UNICODE']
+            )
+
+            s.cursor = TenderDownloaderMiddleware.connect.cursor()
+        else:
+            print("TenderDownloaderMiddleware pymysql connect")
 
         return s
 
@@ -85,8 +89,9 @@ class TenderDownloaderMiddleware:
         # middleware.
 
         sql = "SELECT count(1) FROM tender_source where url = %s"
-        self.connect.ping()
-        cursor = self.connect.cursor()
+        
+        TenderDownloaderMiddleware.connect.ping()
+        cursor = TenderDownloaderMiddleware.connect.cursor()
         cursor.execute(sql, (request.url))
         count = cursor.fetchone()
         cursor.close()

@@ -10,26 +10,30 @@ from scrapy.exceptions import DropItem
 from twisted.enterprise import adbapi
 
 class TenderPipeline:
+    dbpool = None
     def open_spider(self, spider):
-        self.dbpool = adbapi.ConnectionPool('pymysql',
-                cp_max=1,
-                cp_min=1,
-                host="rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com",
-                user="developer_user",
-                passwd="dev123456",
-                charset="utf8",
-                db="developer_db",
-                use_unicode=False)
+        if TenderPipeline.dbpool is None:
+            TenderPipeline.dbpool = adbapi.ConnectionPool('pymysql',
+                    cp_max=1,
+                    cp_min=1,
+                    host=spider.settings['MYSQL_HOST'],
+                    user=spider.settings['MYSQL_USER'],
+                    passwd=spider.settings['MYSQL_PASSWD'],
+                    charset=spider.settings['MYSQL_CHARSET'],
+                    db=spider.settings['MYSQL_DB'],
+                    use_unicode=spider.settings['MYSQL_UNICODE'])
+        else:
+            print("USE adbapi ConnectionPool")
 
     def close_spider(self, spider):
-        self.dbpool.close()
+        TenderPipeline.dbpool.close()
 
     def process_item(self, item, spider):
         for val in item:
             if item[val] is None:
                 raise DropItem("None:"+item[val])
         try:
-            self.dbpool.runInteraction(self.do_insert, item)
+            TenderPipeline.dbpool.runInteraction(self.do_insert, item)
         except:
             raise DropItem("INSERT FALSE")
         return item
