@@ -4,7 +4,7 @@ from scrapy.shell import inspect_response
 import json
 
 class NeimongguZhaoBiaoSpider(scrapy.Spider):
-    name = 'Neimonggu_zhaobiao'
+    name = 'neimonggu_zhaobiao'
     allowed_domains = ['www.nmgp.gov.cn']
     start_urls = ['http://www.nmgp.gov.cn/zfcgwslave/web/index.php?r=new-data%2Fanndata']
 
