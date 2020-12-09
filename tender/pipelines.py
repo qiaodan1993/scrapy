@@ -8,6 +8,7 @@ import pymysql
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 from twisted.enterprise import adbapi
+import scrapy
 
 class TenderPipeline:
     dbpool = None
@@ -31,16 +32,27 @@ class TenderPipeline:
         if TenderPipeline.dbpool is not None:
             TenderPipeline.dbpool.close()
 
+    def feishu_notify(self, message):
+        url = 'https://open.feishu.cn/open-apis/bot/v2/hook/cf52b690-eeff-4d91-b781-1b10c6bee67d'
+        content = { "msg_type": "text",
+                "content": {
+                    "text": "scrapy " + message
+                }
+        }
+        scrapy.Request(url, method='POST', body=json.dumps(content), headers={"Content-Type": "application/json"})
+
+
     def process_item(self, item, spider):
         for val in item:
             if item[val] is None:
-                print(item)
+                self.feishu_notify("None:" + val)
                 raise DropItem("None:"+ val)
             item[val] = item[val].strip()
         try:
             TenderPipeline.dbpool.runInteraction(self.do_insert, item)
         except:
-            raise DropItem("INSERT FALSE")
+            self.feishu_notify("insert false")
+            raise DropItem("insert false")
         return item
     
     def do_insert(self, tx, item):
