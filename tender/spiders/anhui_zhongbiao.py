@@ -23,7 +23,7 @@ class AnhuiZhongBiaoSpider(scrapy.Spider):
 
             item = TenderItem()
             item['url'] = url
-            item['publish_at'] = row_data.xpath('td[position()=2]/a/text()').get()[2:-2]
+            item['publish_at'] = row_data.xpath('td[position()=2]/a/text()').get()[3:-3]
             item['province'] = self.province
             item['typical'] = self.typical
 

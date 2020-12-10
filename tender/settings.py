@@ -94,7 +94,7 @@ COMMAND_MAX_PAGE=2
 LOG_LEVEL='DEBUG'
 DOWNLOAD_TIMEOUT=10
 
-MYSQL_HOST='rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com'
+MYSQL_HOST='rm-bp12r25pi1e1q65gw90130.mysql.rds.aliyuncs.com'
 MYSQL_USER='developer_user'
 MYSQL_PASSWD='dev123456'
 MYSQL_DB='developer_db'
