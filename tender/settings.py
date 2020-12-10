@@ -34,7 +34,7 @@ DOWNLOAD_DELAY = 2
 COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-#TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
@@ -94,18 +94,18 @@ COMMAND_MAX_PAGE=2
 LOG_LEVEL='DEBUG'
 DOWNLOAD_TIMEOUT=10
 
-# MYSQL_HOST='rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com'
-# MYSQL_USER='developer_user'
-# MYSQL_PASSWD='dev123456'
-# MYSQL_DB='developer_db'
-# MYSQL_CHARSET="utf8"
-# MYSQL_UNICODE=False
-
-MYSQL_HOST='xdm72191784.my3w.com'
-MYSQL_USER='xdm72191784'
-MYSQL_PASSWD='Into890123'
-MYSQL_DB='xdm72191784_db'
+MYSQL_HOST='rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com'
+MYSQL_USER='developer_user'
+MYSQL_PASSWD='dev123456'
+MYSQL_DB='developer_db'
 MYSQL_CHARSET="utf8"
 MYSQL_UNICODE=False
+
+# MYSQL_HOST='xdm72191784.my3w.com'
+# MYSQL_USER='xdm72191784'
+# MYSQL_PASSWD='Into890123'
+# MYSQL_DB='xdm72191784_db'
+# MYSQL_CHARSET="utf8"
+# MYSQL_UNICODE=False
 
 DUPEFILTER_CLASS='scrapy.dupefilters.BaseDupeFilter'
