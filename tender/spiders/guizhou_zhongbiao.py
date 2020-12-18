@@ -33,8 +33,6 @@ class GuizhouZhongbiaoSpider(scrapy.Spider):
             request.meta['item'] = item
 
             yield request
-        pass
-
     def parse_detail(self, response):
         item = response.meta['item']
         item['title'] = response.xpath('//h3/text()').get()
