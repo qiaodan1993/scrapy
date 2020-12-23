@@ -2,6 +2,7 @@ import scrapy
 import json
 from tender.items import TenderItem 
 import time
+import re
 
 class ZhejiangZhongBiaoSpider(scrapy.Spider):
     name = 'zhejiang_zhongbiao'
@@ -37,7 +38,8 @@ class ZhejiangZhongBiaoSpider(scrapy.Spider):
     
     def parse_detail(self, response):
         item = response.meta['item']
-
-        item['content'] = response.xpath('//div[@class="gpoz-detail-content"]').get()
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//div[@class="gpoz-detail-content"]').get()
+        item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body
         yield item

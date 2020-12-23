@@ -1,6 +1,6 @@
 import scrapy
-from tender.items import TenderItem 
-
+from tender.items import TenderItem
+import re
 
 class BeijingZhaoBiaoSpider(scrapy.Spider):
     name = 'beijing_zhaobiao'
@@ -40,7 +40,10 @@ class BeijingZhaoBiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
         item['title'] = response.xpath('//body/div[2]/div[2]/span/text()').get()
-        item['content'] = response.xpath('//body/div[2]/div[3]').get()
+
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//body/div[2]/div[3]').get()
+        item['content'] = re_style.sub('', content)
         item['html_source'] = response.body
 
         yield item

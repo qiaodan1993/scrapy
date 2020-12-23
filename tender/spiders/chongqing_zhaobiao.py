@@ -2,6 +2,7 @@ import scrapy
 import json
 from tender.items import TenderItem 
 import datetime
+import re
 
 class ChongqingZhaoBiaoSpider(scrapy.Spider):
     name = 'chongqing_zhaobiao'
@@ -42,7 +43,9 @@ class ChongqingZhaoBiaoSpider(scrapy.Spider):
         item = response.meta['item']
 
         js = json.loads(response.body)
-        item['content'] = js["notice"]["html"]
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = js["notice"]["html"]
+        item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = js["notice"]["html"]
 
         yield item

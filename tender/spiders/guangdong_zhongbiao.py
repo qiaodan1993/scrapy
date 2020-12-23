@@ -1,6 +1,7 @@
 import scrapy
 import datetime
 from tender.items import TenderItem
+import re
 
 class GuangdongZhongbiaoSpider(scrapy.Spider):
     name = 'guangdong_zhongbiao'
@@ -84,7 +85,11 @@ class GuangdongZhongbiaoSpider(scrapy.Spider):
 
         item = response.meta['item']
         item['title'] = response.xpath('//div[@class="zw_c_c_title"]/text()').get()
-        item['content'] = response.xpath('//div[@class="zw_c_c_cont"]').get()
+
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//div[@class="zw_c_c_cont"]').get()
+        item['content'] = re_style.sub('', content) # 去掉a标签
+
         item['html_source'] = response.body
 
         yield item

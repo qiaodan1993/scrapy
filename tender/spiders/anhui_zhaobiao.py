@@ -1,5 +1,6 @@
 import scrapy
 from tender.items import TenderItem 
+import re
 
 class AnhuiZhaoBiaoSpider(scrapy.Spider):
     name = 'anhui_zhaobiao'
@@ -39,7 +40,9 @@ class AnhuiZhaoBiaoSpider(scrapy.Spider):
         item = response.meta['item']
 
         item['title'] = response.xpath('//div[@class="frameNews"]/h1/text()').get()
-        item['content'] = response.xpath('//div[@class="frameNews"]').get()
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//div[@class="frameNews"]').get()
+        item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body
 
         yield item
