@@ -30,7 +30,6 @@ class SichuanZhongbiaoSpider(scrapy.Spider):
 
             item['province'] = self.province
             item['typical'] = self.typical
-            url = 'http://202.61.88.152:9002/view/staticpags/jggg/2020-12-22/3f9017ce40a84039b5e990d958ca1635.html'
             request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
             yield request
