@@ -53,9 +53,15 @@ class HunanZhongbiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
+
+        content = response.xpath('//body').get()
+        re_style = re.compile('<\s*h1[^>].*>[^<]*<\s*/\s*h1\s*>', re.I)
+        content = re_style.sub('', content)
+
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
-        content = response.xpath('//table').get()
-        item['content'] = re_style.sub('', content) # 去掉a标签
+        content = re_style.sub('', content)  # 去掉a标签
+
+        item['content'] = content
         item['html_source'] = response.body
-        
+
         yield item
