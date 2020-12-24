@@ -41,9 +41,14 @@ class ShanghaiZhongBiaoSpider(scrapy.Spider):
         item = response.meta['item']
         js = json.loads(response.xpath('//input[@name="articleDetail"]/@value').get())
         item['title'] = js['title']
-        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+
         content = js['content']
-        item['content'] = re_style.sub('', content)  # 去掉a标签
+        re_style = re.compile('<\s*style[^>].*>[^<]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+
+        item['content'] = content  # 去掉a标签
         item['publish_at'] = js["publishDate"]
         item['html_source'] = js['content']
         yield item
