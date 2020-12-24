@@ -42,9 +42,13 @@ class ChongqingZhongBiaoSpider(scrapy.Spider):
         item = response.meta['item']
 
         js = json.loads(response.body)
-        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         content = js["notice"]["html"]
-        item['content'] = re_style.sub('', content) # 去掉a标签
+        re_style = re.compile('<\s*style[^>]*>[^<][\s\S]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+
+        item['content'] = content  # 去掉a标签
         item['html_source'] = js["notice"]["html"]
 
         yield item
