@@ -38,7 +38,7 @@ class HebeiZhaoBiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-
+        
         item['title'] = response.xpath('//table[@id="2020_VERSION"]/tr[4]/td/span/text()').get()
         item['publish_at'] = response.xpath('//table[@id="2020_VERSION"]/tr[9]/td/span/text()').get()
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
