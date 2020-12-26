@@ -23,7 +23,6 @@ class JiangsuZhaoBiaoSpider(scrapy.Spider):
     def parse(self, response):
         for row_data in response.xpath('//*[@id="newsList"]/ul/li'):
             url = response.urljoin(row_data.css('li a::attr(href)').get())
-
             item = TenderItem()
             item['url'] = url
             item['publish_at'] = row_data.css('li::text').getall()[-1].split()[0]
@@ -39,9 +38,15 @@ class JiangsuZhaoBiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
         item['title'] = response.xpath('//div[@class="dtit"]/h1/text()').get()
-        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+
         content = response.xpath('//div[@class="content"]').get()
-        item['content'] = re_style.sub('', content) # 去掉a标签
+
+        re_style = re.compile('<div class="local">.*</div>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+
+        item['content'] = content # 去掉a标签
         item['html_source'] = response.body
         yield item
 
