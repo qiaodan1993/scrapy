@@ -1,7 +1,7 @@
 import scrapy
 import datetime
 from tender.items import TenderItem
-
+import json
 class GuangdongZhaobiaoSpider(scrapy.Spider):
     name = 'guangxi_zhaobiao'
     allowed_domains = ['www.ccgp-guangxi.gov.cn']
