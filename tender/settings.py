@@ -89,15 +89,16 @@ ITEM_PIPELINES = {
 
 COMMANDS_MODULE='tender.commands'
 COMMAND_NEXT_PAGE=1
-COMMAND_MAX_PAGE=3
+COMMAND_MAX_PAGE=20
 # LOG_LEVEL='WARNING'
-LOG_LEVEL='DEBUG'
+# LOG_LEVEL='WARNING'
+# LOG_FILE='./log1.log'
 DOWNLOAD_TIMEOUT=10
 
-MYSQL_HOST='rm-bp12r25pi1e1q65gwzo.mysql.rds.aliyuncs.com'
-MYSQL_USER='developer_user'
-MYSQL_PASSWD='dev123456'
-MYSQL_DB='developer_db'
+MYSQL_HOST='rm-bp12r25pi1e1q65gw90130.mysql.rds.aliyuncs.com'
+MYSQL_USER='online_db'
+MYSQL_PASSWD='bp12r25pi1e1q65gw90130'
+MYSQL_DB='platform'
 MYSQL_CHARSET="utf8"
 MYSQL_UNICODE=False
 

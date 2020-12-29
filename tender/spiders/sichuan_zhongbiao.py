@@ -1,5 +1,6 @@
 import scrapy
 from tender.items import TenderItem
+import re
 
 class SichuanZhongbiaoSpider(scrapy.Spider):
     name = 'sichuan_zhongbiao'
@@ -29,7 +30,6 @@ class SichuanZhongbiaoSpider(scrapy.Spider):
 
             item['province'] = self.province
             item['typical'] = self.typical
-
             request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
             yield request
@@ -37,7 +37,11 @@ class SichuanZhongbiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
         item['title'] = response.xpath('//h1/text()').get()
-        item['content'] = response.xpath('//div[@id="myPrintArea"]').get()
+
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//div[@id="myPrintArea"]').get()
+        item['content'] = re_style.sub('', content) # 去掉a标签
+
         item['html_source'] = response.body
 
         yield item

@@ -1,6 +1,6 @@
 import scrapy
 from tender.items import TenderItem 
-
+import re
 
 class HebeiZhaoBiaoSpider(scrapy.Spider):
     name = 'hebei_zhaobiao'
@@ -41,7 +41,9 @@ class HebeiZhaoBiaoSpider(scrapy.Spider):
 
         item['title'] = response.xpath('//table[@id="2020_VERSION"]/tr[4]/td/span/text()').get()
         item['publish_at'] = response.xpath('//table[@id="2020_VERSION"]/tr[9]/td/span/text()').get()
-        item['content'] = response.xpath('//table[@id="2020_VERSION"]/tr[10]/td/span').get()
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = response.xpath('//table[@id="2020_VERSION"]/tr[10]/td/span').get()
+        item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body
 
         yield item

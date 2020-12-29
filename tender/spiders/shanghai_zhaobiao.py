@@ -1,6 +1,7 @@
 import scrapy
 import json
 from tender.items import TenderItem 
+import re
 
 class ShanghaiZhaoBiaoSpider(scrapy.Spider):
     name = 'shanghai_zhaobiao'
@@ -40,7 +41,14 @@ class ShanghaiZhaoBiaoSpider(scrapy.Spider):
         item = response.meta['item']
         js = json.loads(response.xpath('//input[@name="articleDetail"]/@value').get())
         item['title'] = js['title']
-        item['content'] = js['content']
+
+        content = js['content']
+        re_style = re.compile('<\s*style[^>].*>[^<]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+
+        item['content'] = content # 去掉a标签
         item['publish_at'] = js["publishDate"]
         item['html_source'] = js['content']
         yield item

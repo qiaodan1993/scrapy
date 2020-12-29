@@ -3,6 +3,7 @@ from tender.items import TenderItem
 from scrapy.shell import inspect_response
 import json
 import time
+import re
 
 class QinghaiZhongBiaoSpider(scrapy.Spider):
     name = 'qinghai_zhongbiao'
@@ -47,9 +48,14 @@ class QinghaiZhongBiaoSpider(scrapy.Spider):
     
     def parse_detail(self, response):
         item = response.meta['item']
-        
+
         item['html_source'] = response.xpath('//input[@name="articleDetail"]/@value').get()
         js = json.loads(item['html_source'])
-        item['content'] = js['content']
+        content = js['content']
+        re_style = re.compile('<\s*style[^>]*>[^<]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+        item['content'] = content  # 去掉style标签
 
         yield item
