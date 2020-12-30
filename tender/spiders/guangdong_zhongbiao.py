@@ -62,7 +62,7 @@ class GuangdongZhongbiaoSpider(scrapy.Spider):
                     'pageSize': '15',
                     'pointPageIndexId': str(pageNum - 1),
                 }
-        yield scrapy.FormRequest(self.start_urls[0], formdata=form_data, callback=self.parse, dont_filter=True)
+            yield scrapy.FormRequest(self.start_urls[0], formdata=form_data, callback=self.parse, dont_filter=True)
 
     def parse(self, response):
         for row_data in (response.xpath('//*[@class="m_m_cont"]/ul/li')):

@@ -110,3 +110,17 @@ MYSQL_UNICODE=False
 # MYSQL_UNICODE=False
 
 DUPEFILTER_CLASS='scrapy.dupefilters.BaseDupeFilter'
+
+# 渲染服务的url
+SPLASH_URL = 'http://127.0.0.1:8050'
+
+#下载器中间件
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy_splash.SplashCookiesMiddleware': 723,
+    'scrapy_splash.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+}
+# 去重过滤器
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+# 使用Splash的Http缓存
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
