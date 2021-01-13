@@ -37,11 +37,10 @@ class NingboZhaobiaoSpider(scrapy.Spider):
             request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
             yield request
-
+            return
     def parse_detail(self, response):
         item = response.meta['item']
-        
-        content = response.xpath("//table").get()
+        content = response.xpath("//table[1]/tbody/tr/td").get()
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         content = re_style.sub('', content) # 去掉a标签
         re_style = re.compile('<\s*style[^>]*>[^<][\s\S]*<\s*/\s*style\s*>', re.I)
