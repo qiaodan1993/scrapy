@@ -35,8 +35,11 @@ class JiangxiZhongbiaoSpider(scrapy.Spider):
     def parse_detail(self, response):
         item = response.meta['item']
 
-        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         content = response.xpath('//div[@class="article-info"]').get()
+        re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
+        content = re_style.sub('', content)
+        re_style = re.compile('<\s*style[^>]*>[^<][\s\S]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
         item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body
 
