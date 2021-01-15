@@ -41,7 +41,6 @@ class ShaanxiZhaobiaoSpider(scrapy.Spider):
             request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
             yield request 
-            return 
     def parse_detail(self, response):
         item = response.meta['item']
 
