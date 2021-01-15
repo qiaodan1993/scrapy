@@ -45,8 +45,6 @@ class ShenzhenZhaoBiaoSpider(scrapy.Spider):
         content = re_style.sub('', content)
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         content = re_style.sub('', content)
-        print(content)
-        return
         item['content'] = content # 去掉a标签
         item['html_source'] = response.body
 
