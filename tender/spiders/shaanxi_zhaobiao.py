@@ -41,12 +41,14 @@ class ShaanxiZhaobiaoSpider(scrapy.Spider):
             request = scrapy.Request(url, callback=self.parse_detail, dont_filter=True)
             request.meta['item'] = item
             yield request 
+            return 
     def parse_detail(self, response):
         item = response.meta['item']
 
         content = response.xpath("//div[@class='contain detail-con']").get()
-        re_style = re.compile('<\s*style[^>].*>[^<]*<\s*/\s*style\s*>', re.I)
-        content = re_style.sub('', content)
+
+        re_style = re.compile('<style>[\s\S]*</style>', re.I)
+        content = re_style.sub('', content)      
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         content = re_style.sub('', content)
 
