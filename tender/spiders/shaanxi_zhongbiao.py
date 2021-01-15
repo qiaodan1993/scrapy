@@ -44,9 +44,14 @@ class ShaanxiZhongbiaoSpider(scrapy.Spider):
             yield request 
     def parse_detail(self, response):
         item = response.meta['item']
+
         content = response.xpath("//div[@class='contain detail-con']").get()
+        re_style = re.compile('<\s*style[^>].*>[^<]*<\s*/\s*style\s*>', re.I)
+        content = re_style.sub('', content)
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
-        item['content'] = re_style.sub('', content) # 去掉a标签
+        content = re_style.sub('', content)
+
+        item['content'] = content # 去掉a标签
         item['html_source'] = response.body
         yield item
 
