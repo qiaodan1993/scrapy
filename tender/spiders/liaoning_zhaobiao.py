@@ -32,6 +32,7 @@ class LiaoningZhaobiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         rs =  json.loads(response.text)
+         
         if not rs:
             return 
         for row_data in rs['rows']:
@@ -42,14 +43,13 @@ class LiaoningZhaobiaoSpider(scrapy.Spider):
             item['title'] = row_data['title']
             item['province'] = self.province
             item['typical'] = self.typical 
-            request = SplashRequest(url, callback=self.parse_detail, dont_filter=True)
+            request = SplashRequest(url, callback=self.parse_detail,dont_filter=True)
             request.meta['item'] = item
             yield request
-
+            return 
     def parse_detail(self, response):
         item = response.meta['item']
-        content = response.xpath("//form[@name='thisform']").get()
-
+        content = response.xpath("//form[@name='thisform']//table")[3].extract()
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body

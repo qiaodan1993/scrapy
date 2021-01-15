@@ -49,8 +49,7 @@ class LiaoningZhongbiaoSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         item = response.meta['item']
-        content = response.xpath("//form[@name='thisform']").get()
-
+        content = response.xpath("//form[@name='thisform']//table")[3].extract()
         re_style = re.compile('<\s*a[^>].*>[^<]*<\s*/\s*a\s*>', re.I)
         item['content'] = re_style.sub('', content) # 去掉a标签
         item['html_source'] = response.body
