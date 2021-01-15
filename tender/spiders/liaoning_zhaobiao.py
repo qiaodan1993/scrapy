@@ -6,7 +6,7 @@ import re
 
 class LiaoningZhaobiaoSpider(scrapy.Spider):
     name = 'liaoning_zhaobiao'
-    allowed_domains = ['http://www.ccgp-liaoning.gov.cn']
+    allowed_domains = ['www.ccgp-liaoning.gov.cn']
     start_urls = ['http://www.ccgp-liaoning.gov.cn/portalindex.do?method=getPubInfoList&t_k=null']
     content_url = 'http://www.ccgp-liaoning.gov.cn/portalindex.do?method=getPubInfoViewOpenNew&infoId={infoId}'
     
@@ -32,7 +32,6 @@ class LiaoningZhaobiaoSpider(scrapy.Spider):
 
     def parse(self, response):
         rs =  json.loads(response.text)
-         
         if not rs:
             return 
         for row_data in rs['rows']:

@@ -10,6 +10,7 @@ from itemadapter import is_item, ItemAdapter
 import pymysql
 from scrapy.exceptions import CloseSpider
 from scrapy.exceptions import IgnoreRequest
+import random
 
 class TenderSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -126,3 +127,15 @@ class TenderDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+class ProxyMiddleWare(object):
+    
+    PROXIES = [
+        '36.250.156.51:9999'
+    ]
+
+    def process_request(self, request, spider):
+         
+        proxy = random.choice(self.PROXIES)
+        # print(proxy)
+        # return
+        request.meta['proxy'] = "http://" + proxy
